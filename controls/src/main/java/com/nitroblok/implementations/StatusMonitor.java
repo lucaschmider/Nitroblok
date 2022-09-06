@@ -7,20 +7,20 @@ public class StatusMonitor implements IStatusMonitor {
 
     private final IStatusMonitorRepository _repository;
 
-    StatusMonitor(IStatusMonitorRepository repository) {
+    public StatusMonitor(IStatusMonitorRepository repository) {
         _repository = repository;
     }
 
     @Override
-    public double getCurrentPressure() {
+    public double getCurrentPressure(int userId) {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    public boolean getIsValveOpened() {
+    public boolean getIsValveOpened(int userId) {
         // TODO Auto-generated method stub
         return false;
     }
-    
+
 }
