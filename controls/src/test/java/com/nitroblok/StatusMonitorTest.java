@@ -14,7 +14,8 @@ import com.nitroblok.implementations.StatusMonitor;
 public class StatusMonitorTest {
 
     @Test(expected = InsufficientPermissionsException.class)
-    public void getCurrentPressure_UserWithoutPermissions_ThrowsInsufficientPermissionsException() {
+    public void getCurrentPressure_UserWithoutPermissions_ThrowsInsufficientPermissionsException()
+            throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
         final double expectedPressure = 200;
@@ -30,7 +31,8 @@ public class StatusMonitorTest {
     }
 
     @Test()
-    public void getCurrentPressure_UserWithPermissions_ReturnsCorrectPressure() {
+    public void getCurrentPressure_UserWithPermissions_ReturnsCorrectPressure()
+            throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
         final double expectedPressure = 200;
@@ -49,7 +51,8 @@ public class StatusMonitorTest {
     }
 
     @Test(expected = InsufficientPermissionsException.class)
-    public void getIsValveOpened_UserWithoutPermissions_ThrowsInsufficientPermissionsException() {
+    public void getIsValveOpened_UserWithoutPermissions_ThrowsInsufficientPermissionsException()
+            throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
 
@@ -63,14 +66,14 @@ public class StatusMonitorTest {
     }
 
     @Test()
-    public void getIsValveOpened_UserWithPermissions_ReturnsCorrectState() {
+    public void getIsValveOpened_UserWithPermissions_ReturnsCorrectState() throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
         final boolean expectedValveState = true;
 
         final IStatusMonitorRepository repositoryMock = mock(IStatusMonitorRepository.class);
         when(repositoryMock.getIsValveOpened()).thenReturn(expectedValveState);
-        when(repositoryMock.canUserAccessPressure(callingUserId)).thenReturn(true);
+        when(repositoryMock.canUserAccessValveState(callingUserId)).thenReturn(true);
 
         final IStatusMonitor monitor = new StatusMonitor(repositoryMock);
 
@@ -82,14 +85,15 @@ public class StatusMonitorTest {
     }
 
     @Test()
-    public void getIsValveOpened_UserWithPermissions_CompletesBeforeThreshold() {
+    public void getIsValveOpened_UserWithPermissions_CompletesBeforeThreshold()
+            throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
         final boolean expectedValveState = true;
 
         final IStatusMonitorRepository repositoryMock = mock(IStatusMonitorRepository.class);
         when(repositoryMock.getIsValveOpened()).thenReturn(expectedValveState);
-        when(repositoryMock.canUserAccessPressure(callingUserId)).thenReturn(true);
+        when(repositoryMock.canUserAccessValveState(callingUserId)).thenReturn(true);
 
         final IStatusMonitor monitor = new StatusMonitor(repositoryMock);
 
@@ -106,31 +110,8 @@ public class StatusMonitorTest {
     }
 
     @Test()
-    public void getIsValveOpened_UserWithoutPermissions_CompletesBeforeThreshold() {
-        // Arrange
-        final int callingUserId = 231;
-        final boolean expectedValveState = true;
-
-        final IStatusMonitorRepository repositoryMock = mock(IStatusMonitorRepository.class);
-        when(repositoryMock.getIsValveOpened()).thenReturn(expectedValveState);
-        when(repositoryMock.canUserAccessPressure(callingUserId)).thenReturn(false);
-
-        final IStatusMonitor monitor = new StatusMonitor(repositoryMock);
-
-        final StopWatch sw = new StopWatch();
-
-        // Act
-        sw.start();
-        monitor.getIsValveOpened(callingUserId);
-        sw.stop();
-
-        // Assert
-        final long elapsedMs = sw.getTime();
-        assertTrue("Execution time (" + elapsedMs + "ms) should be less than or equal to 10ms", elapsedMs <= 10);
-    }
-
-    @Test()
-    public void getCurrentPressure_UserWithPermissions_CompletesBeforeThreshold() {
+    public void getCurrentPressure_UserWithPermissions_CompletesBeforeThreshold()
+            throws InsufficientPermissionsException {
         // Arrange
         final int callingUserId = 231;
         final double expectedPressure = 200;
@@ -153,25 +134,4 @@ public class StatusMonitorTest {
         assertTrue("Execution time (" + elapsedMs + "ms) should be less than or equal to 10ms", elapsedMs <= 10);
     }
 
-    @Test()
-    public void getCurrentPressure_UserWithoutPermissions_CompletesBeforeThreshold() {
-        // Arrange
-        final int callingUserId = 231;
-
-        final IStatusMonitorRepository repositoryMock = mock(IStatusMonitorRepository.class);
-        when(repositoryMock.canUserAccessPressure(callingUserId)).thenReturn(false);
-
-        final IStatusMonitor monitor = new StatusMonitor(repositoryMock);
-
-        final StopWatch sw = new StopWatch();
-
-        // Act
-        sw.start();
-        monitor.getCurrentPressure(callingUserId);
-        sw.stop();
-
-        // Assert
-        final long elapsedMs = sw.getTime();
-        assertTrue("Execution time (" + elapsedMs + "ms) should be less than or equal to 10ms", elapsedMs <= 10);
-    }
 }
