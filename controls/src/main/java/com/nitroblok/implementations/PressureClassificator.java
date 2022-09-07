@@ -8,25 +8,31 @@ public class PressureClassificator implements IPressureClassificator {
 
     @Override
     public boolean shouldCreateLog(double pressure) {
-        if
-        (
-            (logVal >= 50.0 && pressure < 50.0) || 
-            (logVal <= 50.0 && pressure > 50.0) || 
-            (logVal > 180.0 && pressure <= 180.0) || 
-            (logVal <= 180.0 && pressure > 180.0) ||
-            (logVal < 220.0 && pressure >= 220.0) || 
-            (logVal >= 220.0 && pressure < 220.0) ||
-            (logVal <= 300.0 && pressure > 300) ||   
-            (logVal > 300.0 && pressure <= 300.0) || 
-            (logVal <= 500.0 && pressure > 500) ||   
-            (logVal > 500.0 && pressure <= 500.0) 
-        ) {
-            this.logVal = pressure;
-            return true;
-        } else {
-            this.logVal = pressure;
-            return false;
-        }
+
+        boolean previousPressureIsAccectable = ((logVal > 180) && (logVal < 220)) ? true : false;
+        boolean previousPressureIsCriticallyLow = (logVal < 50.0) ? true : false;
+        boolean previousPressureIsLow = ((logVal >= 50.0) && (logVal <= 180.0)) ? true : false;
+        boolean previousPressureIsHigh = ((logVal >= 220.0) && (logVal <= 300.0)) ? true : false;
+        boolean previousPressureisCriticallyHigh = ((logVal > 300.0) && (logVal <= 500.0)) ? true : false;
+        boolean previousPressureisHazardValue = (logVal > 500.0) ? true : false;
+        
+        boolean pressureIsAccectable = ((pressure > 180) && (pressure < 220)) ? true : false;
+        boolean pressureIsCriticallyLow = (pressure < 50.0) ? true : false;
+        boolean pressureIsLow = ((pressure >= 50.0) && (pressure <= 180.0)) ? true : false;
+        boolean pressureIsHigh = ((pressure >= 220.0) && (pressure <= 300.0)) ? true : false;
+        boolean pressureIsCriticallyHigh = ((pressure > 300.0) && (pressure <= 500.0)) ? true : false;
+        boolean pressureisHazardValue = (pressure > 500.0) ? true : false;
+
+        this.logVal = pressure;
+
+        if(pressureIsAccectable && !previousPressureIsAccectable) return true;
+        if(pressureIsCriticallyLow && !previousPressureIsCriticallyLow) return true;
+        if(pressureIsLow && !previousPressureIsLow) return true;
+        if(pressureIsHigh && !previousPressureIsHigh) return true;
+        if(pressureIsCriticallyHigh && !previousPressureisCriticallyHigh) return true;
+        if(pressureisHazardValue && !previousPressureisHazardValue) return true;
+
+        return false;
     }
 
     @Override
@@ -37,7 +43,22 @@ public class PressureClassificator implements IPressureClassificator {
 
     @Override
     public boolean shouldNotifyPlantLeader(double pressure) {
-        // TODO Auto-generated method stub
+        boolean previousPressureIsCriticallyLow = (logVal < 50.0) ? true : false;
+        boolean previousPressureIsLow = ((logVal >= 50.0) && (logVal <= 180.0)) ? true : false;
+        boolean previousPressureIsHigh = ((logVal >= 220.0) && (logVal <= 300.0)) ? true : false;
+        boolean previousPressureisCriticallyHigh = (logVal > 300.0) ? true : false;
+        
+        boolean pressureIsCriticallyLow = (pressure < 50.0) ? true : false;
+        boolean pressureIsLow = ((pressure >= 50.0) && (pressure <= 180.0)) ? true : false;
+        boolean pressureIsHigh = ((pressure >= 220.0) && (pressure <= 300.0)) ? true : false;
+        boolean pressureIsCriticallyHigh = (pressure > 300.0) ? true : false;
+
+        this.logVal = pressure;
+
+        if(pressureIsCriticallyLow && !previousPressureIsCriticallyLow) return true;
+        if(pressureIsLow && !previousPressureIsLow) return true;
+        if(pressureIsHigh && !previousPressureIsHigh) return true;
+        if(pressureIsCriticallyHigh && !previousPressureisCriticallyHigh) return true;
         return false;
     }
 
@@ -49,7 +70,7 @@ public class PressureClassificator implements IPressureClassificator {
 
     @Override
     public boolean shouldRiseAlarm(double pressure) {
-        // TODO Auto-generated method stub
+        if(pressure > 500.0) return true;
         return false;
     }
     
