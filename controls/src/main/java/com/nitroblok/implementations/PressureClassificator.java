@@ -4,10 +4,11 @@ import com.nitroblok.IPressureClassificator;
 
 public class PressureClassificator implements IPressureClassificator {
 
-    private double logVal = 200.0; //120
+    private double logVal = 200.0;
+    private double logVol = 5.0;
 
     @Override
-    public boolean shouldCreateLog(double pressure) {
+    public boolean shouldCreateLog(double pressure, double voltage) {
 
         boolean previousPressureIsAccectable = ((logVal > 180) && (logVal < 220)) ? true : false;
         boolean previousPressureIsCriticallyLow = (logVal < 50.0) ? true : false;
@@ -31,6 +32,18 @@ public class PressureClassificator implements IPressureClassificator {
         if(pressureIsHigh && !previousPressureIsHigh) return true;
         if(pressureIsCriticallyHigh && !previousPressureisCriticallyHigh) return true;
         if(pressureisHazardValue && !previousPressureisHazardValue) return true;
+
+
+        boolean previousVoltageIsAcceptable = (logVol >= 5.0) ? true : false;
+        boolean previousVoltageWithDefect = (logVol < 5.0) ? true : false;
+        boolean voltageIsAcceptable = (voltage >= 5.0) ? true : false;
+        boolean voltageWithDefect = (voltage < 5.0) ? true : false;
+
+        this.logVol = voltage;
+
+        if(voltageIsAcceptable && !previousVoltageIsAcceptable) return true;
+        if(voltageWithDefect && !previousVoltageWithDefect) return true;
+
 
         return false;
     }
