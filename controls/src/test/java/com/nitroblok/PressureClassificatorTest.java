@@ -2,17 +2,49 @@ package com.nitroblok;
 
 import static org.junit.Assert.assertThat;
 
+import java.util.stream.Stream;
+
 import org.hamcrest.core.IsEqual;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.FromDataPoints;
-import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.nitroblok.implementations.PressureClassificator;
 
-@RunWith(Theories.class)
 public class PressureClassificatorTest {
+
+    public static Object[][] data() {
+        return new Object[][] { {45.0, true},
+        {120.0, true},
+        {186.0, false},
+        {248.0, true},
+        {310.0, true},
+        {580.0, true}, };
+    }
+
+    @ParameterizedTest(name ="{index} => initValue={0}, expected={1}")
+    @MethodSource("testSource")
+    void testFunc(double initValue, boolean expected) {
+        IPressureClassificator pressureClassificator = new PressureClassificator();
+        boolean result = pressureClassificator.shouldCreateLog(initValue);
+        assertThat(result, IsEqual.equalTo(expected));
+    }
+    static Stream<Arguments> testSource() {
+        return Stream.of(
+                Arguments.of(45.0, true),
+                Arguments.of(120.0, true),
+                Arguments.of(186.0, false),
+                Arguments.of(248.0, true),
+                Arguments.of(310.0, true),
+                Arguments.of(540.0, true)
+        );
+    }
+
+
+
 
     @DataPoints("initial values")
     public static Object[] initValues() {
