@@ -12,14 +12,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.nitroblok.implementations.PressureClassificator;
 
 public class PressureClassificatorShouldRingTest {
+
+    //Arrange
     @ParameterizedTest(name ="{index} => pressure={0}, voltage={1}, expected={2}")
-    @MethodSource("shouldRingInitial_Source")
-    void shouldRing_testIfRingIsTrueInitial(double pressure, double voltage, boolean expected) {
+    @MethodSource("shouldRing_testData_initializationMeasurement")
+    void shouldRing_initializationMeasurement_triggerAPIRequest(double pressure, double voltage, boolean expected) {
+        //Act
         IPressureClassificator pressureClassificator = new PressureClassificator();
         boolean result = pressureClassificator.shouldRing(pressure, voltage);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> shouldRingInitial_Source() {
+
+    //Arrange
+    static Stream<Arguments> shouldRing_testData_initializationMeasurement() {
         return Stream.of(
                 Arguments.of(45.0, 4.99999, true),
                 Arguments.of(45.0, 5, true),
@@ -44,15 +51,21 @@ public class PressureClassificatorShouldRingTest {
         );
     }
 
+    //Arrange
     @ParameterizedTest(name ="{index} => initPressure={0}, measuredPressure={1}, initVoltage={2}, measuredVoltage={3}, expected={4}")
-    @MethodSource("shouldRing_Source")
-    void shouldRing_testIfRingIsTrue(double initPressure, double measuredPressure, double initVoltage, double measuredVoltage, boolean expected) {
+    @MethodSource("shouldRing_testData_priorMeasurement")
+    void shouldRing_withPriorMeasurement_triggerAPIRequest(double initPressure, double measuredPressure, double initVoltage, double measuredVoltage, boolean expected) {
+        //Act
         final IPressureClassificator pressureClassificator = new PressureClassificator();
         pressureClassificator.shouldRing(initPressure, initVoltage);
         final boolean result = pressureClassificator.shouldRing(measuredPressure, measuredVoltage);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> shouldRing_Source() {
+
+    //Arrange
+    static Stream<Arguments> shouldRing_testData_priorMeasurement() {
         return Stream.of(
 
             //Border: 50

@@ -12,14 +12,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.nitroblok.implementations.PressureClassificator;
 
 public class PressureCalculatorShouldNotifyPlantLeaderTest {
+
+    //Arrange
     @ParameterizedTest(name ="{index} => initValue={0}, expected={1}")
-    @MethodSource("initializationSource")
-    void shouldNotifyPlantLeaderInitializationMeasurement(double initValue, boolean expected) {
+    @MethodSource("shouldNotifyPlantLeader_testData_initializationMeasurement")
+    void shouldNotifyPlantLeader_initializationMeasurement_triggerAPIRequest(double initValue, boolean expected) {
+        //Act
         IPressureClassificator pressureClassificator = new PressureClassificator();
         boolean result = pressureClassificator.shouldNotifyPlantLeader(initValue);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> initializationSource() {
+
+    //Arrange
+    static Stream<Arguments> shouldNotifyPlantLeader_testData_initializationMeasurement() {
         return Stream.of(
                 Arguments.of(180.0, true),
                 Arguments.of(180.00001, false),
@@ -31,15 +38,21 @@ public class PressureCalculatorShouldNotifyPlantLeaderTest {
         );
     }
 
+    //Arrange
     @ParameterizedTest(name ="{index} => initValue={0}, measuredVAlue={1}, expected={2}")
-    @MethodSource("priorValuesSource")
-    void shouldNotifyPlantLeaderWithPriorValuesMeausurement(double initValue, double measuredValue, boolean expected) {
+    @MethodSource("shouldNotifyPlantLeader_testData_priorMeasurement")
+    void shouldNotifyPlantLeader_withPriorMeasurement_triggerAPIRequest(double initValue, double measuredValue, boolean expected) {
+        //Act
         final IPressureClassificator pressureClassificator = new PressureClassificator();
         pressureClassificator.shouldNotifyPlantLeader(initValue);
         final boolean result = pressureClassificator.shouldNotifyPlantLeader(measuredValue);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> priorValuesSource() {
+
+    //Arrange
+    static Stream<Arguments> shouldNotifyPlantLeader_testData_priorMeasurement() {
         return Stream.of(
                 Arguments.of(40, 45, false),
                 Arguments.of(49.999, 50, true),

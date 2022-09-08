@@ -11,16 +11,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.nitroblok.implementations.PressureClassificator;
 
-public class PressureClassificatorTest {
-
+public class PressureClassificatorShouldCreateLogTest {
+    //Arrange
     @ParameterizedTest(name ="{index} => initValue={0}, voltage={1}, expected={2}")
-    @MethodSource("initializationSource")
-    void shouldCreateLogInitializationMeasurement(double initValue, double voltage, boolean expected) {
+    @MethodSource("shouldCreateLog_testData_initializationMeasurement")
+    void shouldCreateLog_initializationMeasurement_triggerAPIRequest(double initValue, double voltage, boolean expected) {
+        //Act
         IPressureClassificator pressureClassificator = new PressureClassificator();
         boolean result = pressureClassificator.shouldCreateLog(initValue, voltage);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> initializationSource() {
+
+    //Arrange
+    static Stream<Arguments> shouldCreateLog_testData_initializationMeasurement() {
         return Stream.of(
             Arguments.of(45.0, 4.99, true),
             Arguments.of(45.0, 5, true),
@@ -42,15 +47,21 @@ public class PressureClassificatorTest {
         );
     }
 
+    //Arrange
     @ParameterizedTest(name ="{index} => initPressure={0}, measuredPressure={1}, initVoltage={2}, measuredVoltage={3} expected={4}")
-    @MethodSource("priorValuesSource")
-    void shouldCreateLogWithPriorValuesMeausurement(double initPressure, double measuredPressure, double initVoltage, double measuredVoltage, boolean expected) {
+    @MethodSource("shouldCreateLog_testData_priorMeasurement")
+    void shouldCreateLog_withPriorMeasurement_triggerAPIRequest(double initPressure, double measuredPressure, double initVoltage, double measuredVoltage, boolean expected) {
+        //Act
         final IPressureClassificator pressureClassificator = new PressureClassificator();
         pressureClassificator.shouldCreateLog(initPressure, initVoltage);
         final boolean result = pressureClassificator.shouldCreateLog(measuredPressure, measuredVoltage);
+
+        //Assert
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> priorValuesSource() {
+
+    //Arrange
+    static Stream<Arguments> shouldCreateLog_testData_priorMeasurement() {
         return Stream.of(
                 Arguments.of(49.99999, 48.999, 12, 13, false),
                 Arguments.of(49.99999, 48.999, 4, 3, false),
