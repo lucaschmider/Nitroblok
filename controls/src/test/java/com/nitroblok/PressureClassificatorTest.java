@@ -13,26 +13,26 @@ import com.nitroblok.implementations.PressureClassificator;
 
 public class PressureClassificatorTest {
 
-    @ParameterizedTest(name ="{index} => initValue={0}, voltage={1}, expected={2}")
-    @MethodSource("initializationSource")
-    void shouldCreateLogInitializationMeasurement(double initValue, double voltage, boolean expected) {
+    @ParameterizedTest(name ="{index} => pressure={0}, voltage={1}, expected={2}")
+    @MethodSource("ShouldRing_initializationSource")
+    void shouldCreateLogInitializationMeasurement(double pressure, double voltage, boolean expected) {
         IPressureClassificator pressureClassificator = new PressureClassificator();
-        boolean result = pressureClassificator.shouldCreateLog(initValue, voltage);
+        boolean result = pressureClassificator.shouldCreateLog(pressure, voltage);
         assertThat(result, IsEqual.equalTo(expected));
     }
-    static Stream<Arguments> initializationSource() {
+    static Stream<Arguments> ShouldRing_initializationSource() {
         return Stream.of(
                 Arguments.of(45.0, 4.99, true),
                 Arguments.of(45.0, 5, true),
 
                 Arguments.of(120.0, 4.99, true),
-                Arguments.of(120.0, 5, true),
+                Arguments.of(120.0, 5, false),
 
                 Arguments.of(186.0, 4.99, true),
                 Arguments.of(186.0, 5, false),
 
                 Arguments.of(248.0, 4.99, true),
-                Arguments.of(248.0, 5, true),
+                Arguments.of(248.0, 5, false),
 
                 Arguments.of(310.0, 4.99, true),
                 Arguments.of(310.0, 5, true),

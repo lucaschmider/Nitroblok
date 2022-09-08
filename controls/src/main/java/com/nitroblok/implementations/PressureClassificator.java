@@ -50,7 +50,18 @@ public class PressureClassificator implements IPressureClassificator {
 
     @Override
     public boolean shouldRing(double pressure, double voltage) {
-        // TODO Auto-generated method stub
+        boolean previousVoltageIsAcceptable = (logVol >= 5) ? true : false;
+        boolean previousPressureIsAcceptable = ((logVal >= 50) && (logVal <= 300)) ? true : false;
+
+        boolean voltageIsAcceptable = (voltage >= 5) ? true : false;
+        boolean pressureIsAcceptable = ((pressure >= 50) && (pressure <= 300)) ? true : false;
+        
+        this.logVal = pressure;
+        this.logVol = voltage;
+
+        if(previousVoltageIsAcceptable == true && voltageIsAcceptable == false) return true;
+        if(previousPressureIsAcceptable == true && pressureIsAcceptable == false) return true;
+
         return false;
     }
 
@@ -77,7 +88,22 @@ public class PressureClassificator implements IPressureClassificator {
 
     @Override
     public boolean shouldNotifyMaintenance(double pressure) {
-        // TODO Auto-generated method stub
+        boolean previousPressureIsLow = ((logVal >= 50) && (logVal <= 180)) ? true : false;
+        boolean previousPressureIsHigh = ((logVal >= 220) && (logVal <= 300)) ? true : false;
+        boolean previousPressureIsCriticallyHigh = (logVal > 300) ? true : false;
+        
+        boolean pressureIsAcceptable = ((pressure > 180) && (pressure < 220)) ? true : false;
+        boolean pressureIsLow = ((pressure >= 50) && (pressure <= 180)) ? true : false;
+        boolean pressureIsHigh = ((pressure >= 220) && (pressure <= 300)) ? true : false;
+        boolean pressureIsCriticallyHigh = (pressure > 300) ? true : false;
+
+        this.logVal = pressure;
+
+        if(pressureIsAcceptable == true) return false;
+        if(pressureIsLow == true && previousPressureIsLow == false) return true;
+        if(pressureIsHigh == true && previousPressureIsHigh == false) return true;
+        if(pressureIsCriticallyHigh == true && previousPressureIsCriticallyHigh == false) return true;
+
         return false;
     }
 
