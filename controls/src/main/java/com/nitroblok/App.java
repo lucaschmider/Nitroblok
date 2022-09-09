@@ -1,8 +1,5 @@
 package com.nitroblok;
 
-import com.nitroblok.implementations.PressureClassificator;
-import com.nitroblok.implementations.StatusMonitor;
-
 /**
  * Hello world!
  *
