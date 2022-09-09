@@ -10,9 +10,11 @@ public class App
         PressureClassificator pressureClassificator = new PressureClassificator();
 
         while(true) {
+            //mocked voltage/pressure values
             double mockedPressure = Math.round((Math.random() * 600) * 100.0) / 100.0;
             double mockedVoltage = Math.round((Math.random() * 24) * 100.0) / 100.0;
 
+            //check for actions to take
             if(pressureClassificator.shouldCreateLog(mockedPressure, mockedVoltage)) {
                 System.out.println("Log-Eintrag wird erstellt - Druck: " + mockedPressure + " Bar, Spannung: " + mockedVoltage + " Volt");
             }
@@ -29,6 +31,7 @@ public class App
                 System.out.println("Alarm/Evakuierung");
             }
 
+            //sleep (100ms)
             try {
                 TimeUnit.MILLISECONDS.sleep(100);
             } catch (InterruptedException e) {
